@@ -3,6 +3,34 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
+class AddTaskInput extends React.Component {
+  constructor(props) {
+    super(props);
+    this.state = { name: '' };
+    this.handleChange = this.handleChange.bind(this);
+    this.handleSubmit = this.handleSubmit.bind(this);
+  }
+
+  handleChange(event) {
+    this.setState({ name: event.target.value });
+  }
+
+  handleSubmit(event) {
+    event.preventDefault();
+    this.props.onTaksAdd(this.state.name);
+    this.setState({ name: '' });
+  }
+
+  render() {
+    return (
+      <form onSubmit={this.handleSubmit}>
+        <input type="text" value={this.state.name} onChange={this.handleChange}></input>
+        <input type="submit" value="Submit" />
+      </form>
+    )
+  }
+}
+
 class Task extends React.Component {
   constructor(props) {
     super(props);
@@ -29,14 +57,41 @@ class TasksList extends React.Component {
   constructor(props) {
     super(props);
     this.idGenerator = 1;
+    this.state = {
+      tasks: [ 
+        {
+          name: 'Task 1',
+          done: true
+        },
+        {
+          name:'Task 2',
+          done: false,
+        },
+        {
+          name: 'Task 3',
+          done: true,
+        }
+      ],
+    }
+    this.onTaksAdd = this.onTaksAdd.bind(this);
   }
 
   getNextId() {
     return this.idGenerator++;
   }
+
+  onTaksAdd(name) {
+    const tasks = this.state.tasks;
+    const newTask = {
+      done: false,
+      name,
+    };
+    tasks.push(newTask);
+    this.setState({tasks});
+  }
   
   render() {
-    const tasks = this.props.tasks;
+    const tasks = this.state.tasks;
     const tasksList = tasks.map((task) => {
       return (
         <Task name={task.name} done={task.done} key={this.getNextId()} />
@@ -44,24 +99,10 @@ class TasksList extends React.Component {
     });
 
     return (<div>
+      <AddTaskInput onTaksAdd={this.onTaksAdd} />
       {tasksList}
     </div>);
   }
 }
-
-const tasks = [ 
-  {
-    name: 'Task 1',
-    done: true
-  },
-  {
-    name:'Task 2',
-    done: false,
-  },
-  {
-    name: 'Task 3',
-    done: true,
-  }
-];
 const domContainer = document.querySelector('#container');
-ReactDOM.render(<TasksList tasks={tasks} />, domContainer);
+ReactDOM.render(<TasksList />, domContainer);
