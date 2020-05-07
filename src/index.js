@@ -3,24 +3,52 @@
 import React, { Component } from "react";
 import ReactDOM from "react-dom";
 
-class LikeButton extends React.Component {
+class Task extends React.Component {
   constructor(props) {
     super(props);
-    this.state = { liked: false };
+    this.handleClick = this.handleClick.bind(this);
+    this.state = { done: true };
+  }
+
+  handleClick() {
+    this.setState({ done: !this.state.done });
   }
 
   render() {
-    if (this.state.liked) {
-      return 'You liked this.';
-    }
-
+    let checkedHtml = this.state.done ? 'checked' : '';
     return (
-      <button onClick = {() => this.setState({ liked: true }) }>
-        Polub
-      </button>
+      <div>
+        <input type="checkbox" id="task1" name="task1" defaultChecked={checkedHtml} onClick={this.handleClick} />
+        <label htmlFor="task1">{this.props.text}</label>
+      </div>
     );
   }
 }
 
+class TasksList extends React.Component {
+  constructor(props) {
+    super(props);
+    this.idGenerator = 1;
+  }
+
+  getNextId() {
+    return this.idGenerator++;
+  }
+  
+  render() {
+    const tasks = this.props.tasks;
+    const tasksList = tasks.map((task) => {
+      return (
+        <Task text={task} key={this.getNextId()} />
+      );
+    });
+
+    return (<div>
+      {tasksList}
+    </div>);
+  }
+}
+
+const tasks = ['Task 1', 'Task 2', 'Task 3'];
 const domContainer = document.querySelector('#container');
-ReactDOM.render(<LikeButton />, domContainer);
+ReactDOM.render(<TasksList tasks={tasks} />, domContainer);

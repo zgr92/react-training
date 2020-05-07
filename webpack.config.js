@@ -37,7 +37,7 @@ var config = {
 module.exports = (env, argv) => {
 
   if (argv.mode === 'development') {
-    config.devtool = 'inline-source-map';
+    config.devtool = 'eval-source-map';
     config.devServer.contentBase = './dist';
   }
 
