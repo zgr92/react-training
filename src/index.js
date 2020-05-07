@@ -6,20 +6,20 @@ import ReactDOM from "react-dom";
 class Task extends React.Component {
   constructor(props) {
     super(props);
-    this.handleClick = this.handleClick.bind(this);
-    this.state = { done: true };
+    this.handleChange = this.handleChange.bind(this);
+    this.state = { done: props.done };
+    this.name = props.name;
   }
 
-  handleClick() {
-    this.setState({ done: !this.state.done });
+  handleChange(event) {
+    this.setState({ done: event.target.checked });
   }
 
   render() {
-    let checkedHtml = this.state.done ? 'checked' : '';
     return (
       <div>
-        <input type="checkbox" id="task1" name="task1" defaultChecked={checkedHtml} onClick={this.handleClick} />
-        <label htmlFor="task1">{this.props.text}</label>
+        <input type="checkbox" checked={this.state.done} onChange={this.handleChange} />
+        <label>{this.name}</label>
       </div>
     );
   }
@@ -39,7 +39,7 @@ class TasksList extends React.Component {
     const tasks = this.props.tasks;
     const tasksList = tasks.map((task) => {
       return (
-        <Task text={task} key={this.getNextId()} />
+        <Task name={task.name} done={task.done} key={this.getNextId()} />
       );
     });
 
@@ -49,6 +49,19 @@ class TasksList extends React.Component {
   }
 }
 
-const tasks = ['Task 1', 'Task 2', 'Task 3'];
+const tasks = [ 
+  {
+    name: 'Task 1',
+    done: true
+  },
+  {
+    name:'Task 2',
+    done: false,
+  },
+  {
+    name: 'Task 3',
+    done: true,
+  }
+];
 const domContainer = document.querySelector('#container');
 ReactDOM.render(<TasksList tasks={tasks} />, domContainer);
